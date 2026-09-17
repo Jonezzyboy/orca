@@ -37,6 +37,7 @@ import { fileDirectoryRead, legacyFileListRead } from './mobile-file-explorer-op
 import { fileExplorerStyles as styles } from './mobile-file-explorer-styles'
 import { MobileFileExplorerRow } from './mobile-file-explorer-row'
 import { navigateToMobileFilePreview } from './mobile-file-preview-navigation'
+import { useHorizontalEdgePadding } from '../layout/screen-edge-padding'
 
 export function MobileFileExplorerPanel(props: {
   hostId: string
@@ -47,6 +48,7 @@ export function MobileFileExplorerPanel(props: {
 }) {
   const { hostId, worktreeId, name, embedded, onRequestClose } = props
   const router = useRouter()
+  const horizontalPadding = useHorizontalEdgePadding()
   const { client, state: connState } = useHostClient(hostId)
   const forceReconnect = useForceReconnect()
   const scopeRef = useRef('')
@@ -362,7 +364,7 @@ export function MobileFileExplorerPanel(props: {
   // Embedded: the dock column owns safe-area/layout, so render a plain View and
   // a non-inset header. Full-screen: keep the SafeAreaView top inset + chrome.
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, embedded ? null : horizontalPadding]}>
       {embedded ? (
         <View style={styles.header}>{headerBar}</View>
       ) : (
