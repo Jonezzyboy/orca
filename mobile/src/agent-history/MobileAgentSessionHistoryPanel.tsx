@@ -48,6 +48,7 @@ import { buildMobileAgentHistoryResumeActionState } from './agent-history-sessio
 import { styles } from './agent-history-styles'
 import { useNow } from '../hooks/use-now'
 import { useHorizontalEdgePadding } from '../layout/screen-edge-padding'
+import { createMobileAiVaultResumeMutationId } from './agent-history-resume-mutation-id'
 
 export type MobileAgentSessionHistoryPanelProps = {
   hostId: string
@@ -305,9 +306,11 @@ export function MobileAgentSessionHistoryPanel({
         <View style={styles.state}>
           <Text style={styles.stateTitle}>Unable to Load</Text>
           <Text style={styles.stateText}>{screenState.message}</Text>
-          <Pressable style={styles.retryButton} onPress={retry}>
-            <Text style={styles.retryText}>Retry</Text>
-          </Pressable>
+          {retry ? (
+            <Pressable style={styles.retryButton} onPress={retry}>
+              <Text style={styles.retryText}>Retry</Text>
+            </Pressable>
+          ) : null}
         </View>
       ) : (
         <>
@@ -426,10 +429,4 @@ async function loadMobileResumeMetadata(client: RpcClient): Promise<{
     settings: settings ?? null,
     worktrees: readAcceptedResumeList(worktreeResult, 'worktrees') ?? null
   }
-}
-
-function createMobileAiVaultResumeMutationId(sessionId: string): string {
-  const sessionPart = sessionId.replace(/[^a-zA-Z0-9_.:-]/g, '_').slice(0, 64) || 'session'
-  const randomPart = Math.random().toString(36).slice(2, 10)
-  return `ai-vault-resume:${sessionPart}:${Date.now().toString(36)}:${randomPart}`
 }
